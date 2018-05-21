@@ -31,7 +31,8 @@
   },
   "homepage": "https://github.com/auth0/contact-form#readme",
   "dependencies": {
-    "bootstrap": "^3.3.6",
+    "bootstrap": "^3.3.7",
+    "jquery": "^2.2.4",
     "lodash": "^4.13.1"
   },
   "peerDependencies": {

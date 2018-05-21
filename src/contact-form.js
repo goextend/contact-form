@@ -4,6 +4,7 @@ import jQuery from 'jquery';
 import { assign } from 'lodash';
 import 'bootstrap/js/modal';
 import template from './contact-form.jade';
+import template_signup from './contact-form-signup.jade';
 import './contact-form.styl';
 
 // Globals apis
@@ -19,7 +20,7 @@ class ContactForm {
     onFormSuccess: () => {},
     onFormFail: () => {},
     postUrl: 'https://webtask.it.auth0.com/api/run/auth0-generic/contact-form-mandrill',
-    modalTitle: 'Contact Sales Team'
+    modalTitle: 'Contact Sales Team',
   }
 
   constructor(options) {
@@ -57,7 +58,14 @@ class ContactForm {
     const { modalRoot } = this.getElements();
 
     modalRoot.remove();
-    $('body').append(template({ modalTitle }));
+
+    //display the sign up form or standard form
+    if (this.options.signUp) {
+      $('body').append(template_signup({ modalTitle }));
+    }
+    else {
+      $('body').append(template({ modalTitle }));
+    }
   }
 
   /**
