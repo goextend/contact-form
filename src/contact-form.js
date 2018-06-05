@@ -21,6 +21,7 @@ class ContactForm {
     onFormFail: () => {},
     postUrl: 'https://webtask.it.auth0.com/api/run/auth0-generic/contact-form-mandrill',
     modalTitle: 'Contact Sales Team',
+    signUp: true
   }
 
   constructor(options) {
@@ -72,17 +73,30 @@ class ContactForm {
    * Get DOM elements
    */
   getElements() {
-    const options = {
-      modalRoot: $('#contact-form-modal'),
-      formRoot: $('#contact-form-modal__form'),
-      companyElement: $('#contact-form-modal__company'),
-      elements: [
+    var elements;
+
+    if (this.options.signUp) {
+      elements = [
+        $('#contact-form-modal__name'),
+        $('#contact-form-modal__email'),
+        $('#contact-form-modal__company'),
+      ]
+    }
+    else {
+      elements = [
         $('#contact-form-modal__name'),
         $('#contact-form-modal__email'),
         $('#contact-form-modal__company'),
         $('#contact-form-modal__role'),
         $('#contact-form-modal__message')
-      ],
+      ]      
+    }
+
+    const options = {
+      modalRoot: $('#contact-form-modal'),
+      formRoot: $('#contact-form-modal__form'),
+      companyElement: $('#contact-form-modal__company'),
+      elements: elements,
       submitButton: $('#contact-form-modal__submit')
     };
 
@@ -196,6 +210,12 @@ class ContactForm {
       if (!this.checkElementsValidation()) return this.setSubmitButtonState('error');
 
       const { data, metricsData } = this.getData(elements);
+
+      if (this.options.signUp) {
+        data.subject = "Starter plan sign up",
+        data.message = "Starter plan sign up",
+        data.role=""
+      }
 
       return $.ajax({ type: 'POST', url: postUrl, data })
         .done(() => {
