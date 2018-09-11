@@ -4,7 +4,7 @@ import jQuery from 'jquery';
 import { assign } from 'lodash';
 import 'bootstrap/js/modal';
 import template from './contact-form.jade';
-import template_signup from './contact-form-signup.jade';
+import template_support from './contact-form-support.jade';
 import './contact-form.styl';
 
 // Globals apis
@@ -19,9 +19,9 @@ class ContactForm {
     onModalOpen: () => {},
     onFormSuccess: () => {},
     onFormFail: () => {},
-    postUrl: 'https://webtask.it.auth0.com/api/run/auth0-generic/contact-form-mandrill',
-    modalTitle: 'Contact Sales Team',
-    signUp: true
+    postUrl: 'https://wtg-extend-prod.sandbox.auth0-extend.com/goextend-contact-support',
+    modalTitle: 'Talk to Sales',
+    support: false
   }
 
   constructor(options) {
@@ -60,11 +60,10 @@ class ContactForm {
 
     modalRoot.remove();
 
-    //display the sign up form or standard form
-    if (this.options.signUp) {
-      $('body').append(template_signup({ modalTitle }));
-    }
-    else {
+    // display the support up form or standard form
+    if (this.options.support) {
+      $('body').append(template_support({ modalTitle }));
+    } else {
       $('body').append(template({ modalTitle }));
     }
   }
@@ -73,30 +72,29 @@ class ContactForm {
    * Get DOM elements
    */
   getElements() {
-    var elements;
+    const elements = [
+      $('#contact-form-modal__name'),
+      $('#contact-form-modal__email'),
+      $('#contact-form-modal__message')
+    ];
 
-    if (this.options.signUp) {
-      elements = [
-        $('#contact-form-modal__name'),
-        $('#contact-form-modal__email'),
-        $('#contact-form-modal__company'),
-      ]
-    }
-    else {
-      elements = [
-        $('#contact-form-modal__name'),
-        $('#contact-form-modal__email'),
+    if (this.options.support) {
+      elements.push(
+        $('#contact-form-modal__host-url'),
+        $('#contact-form-modal__severity')
+      );
+    } else {
+      elements.push(
         $('#contact-form-modal__company'),
         $('#contact-form-modal__role'),
-        $('#contact-form-modal__message')
-      ]      
+      );
     }
 
     const options = {
       modalRoot: $('#contact-form-modal'),
       formRoot: $('#contact-form-modal__form'),
       companyElement: $('#contact-form-modal__company'),
-      elements: elements,
+      elements,
       submitButton: $('#contact-form-modal__submit')
     };
 
@@ -211,11 +209,8 @@ class ContactForm {
 
       const { data, metricsData } = this.getData(elements);
 
-      if (this.options.signUp) {
-        data.subject = "Starter plan sign up",
-        data.message = "Starter plan sign up",
-        data.role=""
-      }
+      data.subject = this.options.support ?
+      'extend_support' : 'extend_sales';
 
       return $.ajax({ type: 'POST', url: postUrl, data })
         .done(() => {
@@ -324,7 +319,6 @@ class ContactForm {
       metricsData[key] = data[key] = element.val();
     });
 
-    data.subject = `New contact from: ${pathname}`;
     metricsData.trackData = metricsData.email;
 
     return { data, metricsData };

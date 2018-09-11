@@ -6,8 +6,10 @@
           span(aria-hidden="true") &times;
         h4.modal-title#contact-form-title= modalTitle
       .modal-body
-        p Thanks for inquiring about Extend! Our sales team will follow up with you.
-        p If you have a technical inquiry, visit the #{''}
+        p
+          b Note: #{''}
+          | Only Extend Enterprise customers can submit support tickets.
+        p For Developer and Starter subscriptions, visit the #{''}
           a(href="https://community.goextend.io/", taget="_blank") Extend Community Forums
           | .
         .form-group
@@ -19,25 +21,24 @@
           input.form-control.contact-form-modal__email#contact-form-modal__email(type="email", placeholder="Email address", autocomplete="section-contact email", name="email", required)
           span.required *
         .form-group
-          label.sr-only(for="contact-form-modal__company") Company
-          input.form-control.contact-form-modal__company#contact-form-modal__company(type="text", placeholder="Company", autocomplete="section-contact organization", name="company")
-        .form-group
-          label.sr-only(for="contact-form-modal__role") Role
-          .acf-custom-select
-            select.form-control.contact-form-modal__role#contact-form-modal__role(name="role", required)
-              option Software Developer
-              option Engineering Exec / Management
-              option C-Level
-              option IT operations
-              option Product Management
-              option Sales
-              option Marketing
-              option Security & Compliance
-              option Other
-          span.required *
-        .form-group
           label.sr-only(for="contact-form-modal__message") Message
-          textarea.form-control.contact-form-modal__message#contact-form-modal__message(rows="4", placeholder="Message", name="message", required)
+          textarea.form-control.contact-form-modal__message#contact-form-modal__message(rows="4", placeholder="Briefly explain your issue", name="message", required)
           span.required *
+        p Extend Host URL:
+        .form-group
+          label.sr-only(for="contact-form-modal__host-url") Extend Host URL
+          input.form-control.contact-form-modal__host-url#contact-form-modal__host-url(type="text", placeholder="https://{your-subdomain}.auth0-extend.com", name="hostUrl", required)
+          span.required *
+        p Severity:
+        .form-group
+          label.sr-only(for="contact-form-modal__severity") Severity
+          .acf-custom-select
+            select.form-control.contact-form-modal__severity#contact-form-modal__severity(name="severity", required)
+              option Normal
+              option Urgent
+              option High
+              option Low
+          span.required *
+
       .modal-footer
         button.btn.btn-success.btn-lg.animated.contact-form-modal__submit#contact-form-modal__submit(type="submit") Send
