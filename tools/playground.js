@@ -4,8 +4,17 @@ import contactForm from '../src/contact-form';
 const $ = jQuery;
 const ContactForm = contactForm.ContactForm;
 
-const contactFormInstance = new ContactForm();
+$('#show-modal').click(() => {
+  const contactFormInstance = new ContactForm();
+  contactFormInstance.show();
+});
 
-contactFormInstance.show();
+$('#show-support-modal').click(() => {
+  const options = {
+    modalTitle: 'Submit a Support Ticket',
+    support: true
+  };
 
-$('#show-modal').click(contactFormInstance.show);
+  const contactFormInstance = new ContactForm(options);
+  contactFormInstance.show();
+});
