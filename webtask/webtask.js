@@ -51,7 +51,7 @@ function ensureBodyProperties(context, properties) {
 }
 
 async function upsertToIntercom(context) {
-  ensureBodyProperties(context, ['name', 'email', 'company', 'role']);
+  ensureBodyProperties(context, ['name', 'email', 'role']);
 
   const options = {
     headers: {
@@ -63,7 +63,7 @@ async function upsertToIntercom(context) {
       email: context.body.email,
       name: context.body.name,
       custom_attributes: {
-        company: context.body.company,
+        company: context.body.company || '',
         role: context.body.role,
         extend: true,
         extend_last_seen_at: new Date(),
@@ -81,9 +81,11 @@ async function upsertToIntercom(context) {
 async function upsertToZendesk(context) {
   ensureBodyProperties(context, ['name', 'email', 'message', 'subject']);
 
+  const source = context.query.source || 'contact_form';
+
   const userAndPassword = `glenn.block@auth0.com/token:${context.secrets.ZENDESK_TOKEN}`;
   const customFields = [
-      { id: 56588368, value: 'extend_contact_form' },
+      { id: 56588368, value: `extend_${source}` },
       { id: 80837608, value: context.body.subject },
   ];
 
@@ -101,7 +103,7 @@ async function upsertToZendesk(context) {
 
   const payload = {
       ticket: {
-        subject: `Source [Auth0 Extend]: 'contact_form' ${context.body.subject}`,
+        subject: `Source [Auth0 Extend]: ${source} ${context.body.subject}`,
         ticket_form_id: 622708,
         group_id: 40953288,
         description: context.body.message,
@@ -109,7 +111,7 @@ async function upsertToZendesk(context) {
           name: context.body.name + "/token",
           email: context.body.email
         },
-        tags: ["extend_contact", 'extend_contact_form'],
+        tags: [`extend_${source}`, 'extend_contact_form'],
         custom_fields: customFields
       }
   };
